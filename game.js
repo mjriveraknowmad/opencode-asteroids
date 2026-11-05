@@ -9,6 +9,10 @@ const SPEED_BOOST_DURATION   = 5;    // segundos
 const SPEED_BOOST_MULTIPLIER = 2;
 const POWERUP_DROP_CHANCE    = 0.15;
 
+const SHOOTING_STAR_CHANCE = 0.25;
+const SHOOTING_STAR_SPEED  = 170;    // px/s, muy por encima de los 32-85 base
+const SHOOTING_STAR_TTL    = [6, 10]; // segundos
+
 // ── Input ─────────────────────────────────────────────────────────────────────
 const keys = {};
 const justPressed = {};
@@ -72,6 +76,7 @@ class Asteroid {
     this.y    = y;
     this.size = size;
     this.radius = RADII[size];
+    this.color = '#fff';
     this.dead = false;
 
     const angle = rand(0, Math.PI * 2);
@@ -109,7 +114,7 @@ class Asteroid {
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(this.rot);
-    ctx.strokeStyle = '#fff';
+    ctx.strokeStyle = this.color;
     ctx.lineWidth   = 1.5;
     ctx.lineJoin    = 'round';
     ctx.beginPath();
@@ -119,6 +124,47 @@ class Asteroid {
     ctx.closePath();
     ctx.stroke();
     ctx.restore();
+  }
+}
+
+// ── Estrella fugaz ────────────────────────────────────────────────────────────
+class ShootingStar extends Asteroid {
+  constructor(x, y) {
+    super(x, y, 2);
+    this.color = '#ffd166';
+    this.ttl   = rand(SHOOTING_STAR_TTL[0], SHOOTING_STAR_TTL[1]);
+
+    const angle = rand(0, Math.PI * 2);
+    const speed = SHOOTING_STAR_SPEED + rand(-10, 20);
+    this.vx = Math.cos(angle) * speed;
+    this.vy = Math.sin(angle) * speed;
+  }
+
+  update(dt) {
+    super.update(dt);
+    this.ttl -= dt;
+    if (this.ttl <= 0) this.dead = true;
+  }
+
+  split() {
+    return [];  // se desvanece sin fragmentarse
+  }
+
+  draw() {
+    // Parpadeo antes de desvanecerse
+    if (this.ttl < 2 && Math.floor(this.ttl * 8) % 2 === 0) return;
+
+    // Estela opuesta a la dirección de movimiento
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255, 209, 102, 0.45)';
+    ctx.lineWidth   = 3;
+    ctx.beginPath();
+    ctx.moveTo(this.x, this.y);
+    ctx.lineTo(this.x - this.vx * 0.14, this.y - this.vy * 0.14);
+    ctx.stroke();
+    ctx.restore();
+
+    super.draw();
   }
 }
 
@@ -299,15 +345,25 @@ let score, lives, level;
 let state;      // 'playing' | 'dead' | 'gameover'
 let deadTimer;
 
-function spawnAsteroids(count) {
+function safeSpawnPoint() {
   const SAFE_DIST = 130;
+  let x, y;
+  do {
+    x = rand(0, W);
+    y = rand(0, H);
+  } while (Math.hypot(x - W / 2, y - H / 2) < SAFE_DIST);
+  return { x, y };
+}
+
+function spawnAsteroids(count) {
   for (let i = 0; i < count; i++) {
-    let x, y;
-    do {
-      x = rand(0, W);
-      y = rand(0, H);
-    } while (Math.hypot(x - W / 2, y - H / 2) < SAFE_DIST);
+    const { x, y } = safeSpawnPoint();
     asteroids.push(new Asteroid(x, y, 3));
+  }
+
+  if (Math.random() < SHOOTING_STAR_CHANCE) {
+    const { x, y } = safeSpawnPoint();
+    asteroids.push(new ShootingStar(x, y));
   }
 }
 

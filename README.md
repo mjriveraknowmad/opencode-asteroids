@@ -42,6 +42,10 @@ Luego visita `http://localhost:3000`.
 
 - **Velocidad (`2X`)** — aparece al destruir asteroides (15% de probabilidad). Al recogerlo, la nave se mueve al doble de velocidad durante 5 segundos; el HUD muestra `VELOCIDAD x2` con el tiempo restante.
 
+## Estrella fugaz
+
+- Asteroide especial, mucho más rápido que los normales. Aparece de forma aleatoria en algunas oleadas (25% de probabilidad), no se fragmenta al ser destruido y se desvanece por sí solo tras 6-10 segundos si no lo alcanzas.
+
 ## Características
 
 - 3 vidas con invencibilidad temporal al reaparecer (parpadeo)

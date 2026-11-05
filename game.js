@@ -75,9 +75,10 @@ class Asteroid {
     this.x    = x;
     this.y    = y;
     this.size = size;
-    this.radius = RADII[size];
-    this.color = '#fff';
-    this.dead = false;
+    this.radius    = RADII[size];
+    this.color     = '#fff';
+    this.fillColor = null;
+    this.dead      = false;
 
     const angle = rand(0, Math.PI * 2);
     const speed = SPEEDS[size] + rand(-15, 15);
@@ -122,6 +123,10 @@ class Asteroid {
     for (let i = 1; i < this.verts.length; i++)
       ctx.lineTo(this.verts[i][0], this.verts[i][1]);
     ctx.closePath();
+    if (this.fillColor) {
+      ctx.fillStyle = this.fillColor;
+      ctx.fill();
+    }
     ctx.stroke();
     ctx.restore();
   }
@@ -131,8 +136,9 @@ class Asteroid {
 class ShootingStar extends Asteroid {
   constructor(x, y) {
     super(x, y, 2);
-    this.color = '#ffd166';
-    this.ttl   = rand(SHOOTING_STAR_TTL[0], SHOOTING_STAR_TTL[1]);
+    this.color     = '#ffd166';
+    this.fillColor = 'rgba(255, 209, 102, 0.5)';
+    this.ttl       = rand(SHOOTING_STAR_TTL[0], SHOOTING_STAR_TTL[1]);
 
     const angle = rand(0, Math.PI * 2);
     const speed = SHOOTING_STAR_SPEED + rand(-10, 20);

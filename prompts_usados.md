@@ -115,3 +115,15 @@ mergea la rama con main
 ~~~text
 Crea un prompts_usados.md, con los prompts usados
 ~~~
+
+## 9. Rellenar la estrella fugaz
+
+~~~text
+rellena de un color amarillento la estrella fugaz, para que se distinga claramente
+~~~
+
+## 10. Actualizar el registro y commitear
+
+~~~text
+actualiza los prompts_usados.md, y haz un commit
+~~~

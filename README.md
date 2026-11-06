@@ -29,6 +29,7 @@ Luego visita `http://localhost:3000`.
 | `←` `→`   | Rotar nave |
 | `↑`       | Propulsar  |
 | `Espacio` | Disparar   |
+| `S`       | Cambiar skin |
 
 ## Puntuación
 
@@ -44,6 +45,19 @@ Al destruir un asteroide hay un 15% de probabilidad de que suelte un power-up. E
 
 - **Velocidad (`2X`)** — al recogerlo, la nave se mueve al doble de velocidad durante 5 segundos; el HUD muestra `VELOCIDAD x2` con el tiempo restante.
 - **Escudo (`ESC`)** — al recogerlo, la nave queda protegida durante 8 segundos con un anillo cian pulsante. Mientras el escudo esté activo, cualquier asteroide que impacte contra la nave se destruye sin restarle vidas. El HUD muestra `ESCUDO` con el tiempo restante.
+
+## Skins
+
+La apariencia de la nave se puede cambiar en cualquier momento con la tecla `S`. La skin activa se muestra en la esquina inferior izquierda del HUD y se guarda en el navegador, por lo que se conserva al recargar la página.
+
+| Skin    | Color  |
+| ------- | ------ |
+| Clásica | Blanco |
+| Flecha  | Cian   |
+| Halcón  | Rosa   |
+| Ovni    | Verde  |
+
+Los iconos de vidas usan la silueta de la skin seleccionada.
 
 ## Estrella fugaz
 

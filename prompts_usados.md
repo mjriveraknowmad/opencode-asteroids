@@ -127,3 +127,29 @@ rellena de un color amarillento la estrella fugaz, para que se distinga claramen
 ~~~text
 actualiza los prompts_usados.md, y haz un commit
 ~~~
+
+## 11. Crear el comando de worktrees
+
+~~~text
+Crea un comando personalizado de OpenCode que corra con scope local. Que se ejecute con "/worktree".
+Y lo que quiero que haga es simplemente el siguiente comando:
+
+git worktree add .worktrees/<nombre-del-worktree>
+
+
+Ten presente que vas a recibir un argumento, y que ese argumento puede, o no, tener espacios. Necesito que lo analices y le pongas el nombre del worktree que va a estar basado en el contexto que te estoy dando. El nombre debe ser en kebab-case sin espacios ni acentos.
+No hagas nada más. No te cambies de directorio. No hagas nada adicional.
+Simplemente ejecuta el comando de la creación del worktree
+~~~
+
+## 12. Nombre definitivo del comando
+
+~~~text
+Vale implementalo, pero llamale worktree-customed para no confundirlo con lo de OpenCode
+~~~
+
+## 13. Actualizar el registro
+
+~~~text
+Actualiza el archivo de prompts_usados.md con este ultimo prompt que usé
+~~~

@@ -7,6 +7,7 @@ const H = 600;
 
 const SPEED_BOOST_DURATION   = 5;    // segundos
 const SPEED_BOOST_MULTIPLIER = 2;
+const SHIELD_DURATION        = 8;    // segundos
 const POWERUP_DROP_CHANCE    = 0.15;
 
 const SHOOTING_STAR_CHANCE = 0.25;
@@ -189,6 +190,7 @@ class Ship {
     this.invincible    = 3;
     this.shootCooldown = 0;
     this.speedBoost    = 0;
+    this.shield        = 0;
     this.dead          = false;
   }
 
@@ -197,6 +199,7 @@ class Ship {
     if (this.invincible    > 0) this.invincible    -= dt;
     if (this.shootCooldown > 0) this.shootCooldown -= dt;
     if (this.speedBoost    > 0) this.speedBoost    -= dt;
+    if (this.shield        > 0) this.shield        -= dt;
 
     const ROT   = 3.5;   // rad/s
     const THRUST = 260;  // px/s²
@@ -258,6 +261,16 @@ class Ship {
       ctx.stroke();
     }
 
+    // Escudo activo: anillo cian pulsante alrededor de la nave
+    if (this.shield > 0) {
+      const pulse = 0.55 + Math.sin(this.shield * 8) * 0.2;
+      ctx.strokeStyle = `rgba(76, 201, 240, ${pulse.toFixed(2)})`;
+      ctx.lineWidth   = 2;
+      ctx.beginPath();
+      ctx.arc(0, 0, 22, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
     ctx.restore();
   }
 }
@@ -296,9 +309,10 @@ class Particle {
 
 // ── Power-ups ─────────────────────────────────────────────────────────────────
 class PowerUp {
-  constructor(x, y) {
+  constructor(x, y, type = 'speed') {
     this.x      = x;
     this.y      = y;
+    this.type   = type;   // 'speed' | 'shield'
     this.radius = 14;
     this.ttl    = 12;
     this.rot    = 0;
@@ -315,32 +329,53 @@ class PowerUp {
     // Parpadeo antes de desaparecer
     if (this.ttl < 3 && Math.floor(this.ttl * 8) % 2 === 0) return;
 
+    const isShield = this.type === 'shield';
+    const COLOR    = isShield ? '#4cc9f0' : '#ffd166';
+
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(this.rot);
-    ctx.strokeStyle = '#ffd166';
+    ctx.strokeStyle = COLOR;
     ctx.lineWidth   = 2;
     ctx.lineJoin    = 'round';
 
-    // Rombo giratorio
-    ctx.beginPath();
-    for (let i = 0; i < 4; i++) {
-      const a  = (i / 4) * Math.PI * 2;
-      const px = Math.cos(a) * this.radius;
-      const py = Math.sin(a) * this.radius;
-      if (i === 0) ctx.moveTo(px, py);
-      else         ctx.lineTo(px, py);
-    }
-    ctx.closePath();
-    ctx.stroke();
+    if (isShield) {
+      // Anillo con hexágono interior
+      ctx.beginPath();
+      ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+      ctx.stroke();
 
-    // Etiqueta "2X" siempre horizontal
+      ctx.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const a  = (i / 6) * Math.PI * 2;
+        const px = Math.cos(a) * this.radius * 0.55;
+        const py = Math.sin(a) * this.radius * 0.55;
+        if (i === 0) ctx.moveTo(px, py);
+        else         ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.stroke();
+    } else {
+      // Rombo giratorio
+      ctx.beginPath();
+      for (let i = 0; i < 4; i++) {
+        const a  = (i / 4) * Math.PI * 2;
+        const px = Math.cos(a) * this.radius;
+        const py = Math.sin(a) * this.radius;
+        if (i === 0) ctx.moveTo(px, py);
+        else         ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.stroke();
+    }
+
+    // Etiqueta siempre horizontal
     ctx.rotate(-this.rot);
-    ctx.fillStyle    = '#ffd166';
-    ctx.font         = 'bold 13px monospace';
+    ctx.fillStyle    = COLOR;
+    ctx.font         = isShield ? 'bold 9px monospace' : 'bold 13px monospace';
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('2X', 0, 1);
+    ctx.fillText(isShield ? 'ESC' : '2X', 0, 1);
     ctx.restore();
   }
 }
@@ -391,9 +426,11 @@ function nextLevel() {
   bullets   = [];
   particles = [];
   powerups  = [];
-  const activeBoost = ship.speedBoost;
+  const activeBoost  = ship.speedBoost;
+  const activeShield = ship.shield;
   ship.reset();
-  ship.speedBoost = activeBoost;  // el power-up no se pierde al cambiar de nivel
+  ship.speedBoost = activeBoost;   // los power-ups no se pierden al cambiar de nivel
+  ship.shield     = activeShield;
   spawnAsteroids(3 + level);
 }
 
@@ -459,8 +496,10 @@ function update(dt) {
         a.dead = true;
         score += POINTS[a.size];
         explode(a.x, a.y, a.size * 5);
-        if (Math.random() < POWERUP_DROP_CHANCE)
-          powerups.push(new PowerUp(a.x, a.y));
+        if (Math.random() < POWERUP_DROP_CHANCE) {
+          const type = Math.random() < 0.5 ? 'shield' : 'speed';
+          powerups.push(new PowerUp(a.x, a.y, type));
+        }
         newAsteroids.push(...a.split());
       }
     }
@@ -471,8 +510,9 @@ function update(dt) {
   // Nave vs power-up
   for (const p of powerups) {
     if (!p.dead && dist(ship, p) < ship.radius + p.radius) {
-      p.dead          = true;
-      ship.speedBoost = SPEED_BOOST_DURATION;
+      p.dead = true;
+      if (p.type === 'shield') ship.shield     = SHIELD_DURATION;
+      else                     ship.speedBoost = SPEED_BOOST_DURATION;
       explode(p.x, p.y, 6);
     }
   }
@@ -482,10 +522,17 @@ function update(dt) {
   if (ship.invincible <= 0) {
     for (const a of asteroids) {
       if (dist(ship, a) < ship.radius + a.radius * 0.82) {
-        killShip();
+        if (ship.shield > 0) {
+          // El escudo destruye el asteroide sin dañar la nave
+          a.dead = true;
+          explode(a.x, a.y, a.size * 5);
+        } else {
+          killShip();
+        }
         break;
       }
     }
+    asteroids = asteroids.filter(a => !a.dead);
   }
 
   // Nivel completado
@@ -517,11 +564,17 @@ function drawHUD() {
   ctx.textAlign = 'left';
   ctx.fillText(`SCORE  ${score}`, 14, 26);
 
+  let hudY = 48;
   if (ship.speedBoost > 0 && state !== 'gameover') {
     ctx.fillStyle = '#ffd166';
-    ctx.fillText(`VELOCIDAD x2  ${ship.speedBoost.toFixed(1)}s`, 14, 48);
-    ctx.fillStyle = '#fff';
+    ctx.fillText(`VELOCIDAD x2  ${ship.speedBoost.toFixed(1)}s`, 14, hudY);
+    hudY += 22;
   }
+  if (ship.shield > 0 && state !== 'gameover') {
+    ctx.fillStyle = '#4cc9f0';
+    ctx.fillText(`ESCUDO  ${ship.shield.toFixed(1)}s`, 14, hudY);
+  }
+  ctx.fillStyle = '#fff';
 
   ctx.textAlign = 'center';
   ctx.fillText(`NIVEL ${level}`, W / 2, 26);

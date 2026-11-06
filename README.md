@@ -41,10 +41,11 @@ Luego visita `http://localhost:3000`.
 
 ## Power-ups
 
-Al destruir un asteroide hay un 15% de probabilidad de que suelte un power-up. El tipo se elige al azar entre velocidad y escudo.
+Al destruir un asteroide hay un 15% de probabilidad de que suelte un power-up. El tipo se elige al azar entre velocidad, escudo y triple shot.
 
 - **Velocidad (`2X`)** — al recogerlo, la nave se mueve al doble de velocidad durante 5 segundos; el HUD muestra `VELOCIDAD x2` con el tiempo restante.
 - **Escudo (`ESC`)** — al recogerlo, la nave queda protegida durante 8 segundos con un anillo cian pulsante. Mientras el escudo esté activo, cualquier asteroide que impacte contra la nave se destruye sin restarle vidas. El HUD muestra `ESCUDO` con el tiempo restante.
+- **Triple shot (`3X`)** — al recogerlo, la nave dispara tres balas paralelas en línea recta durante 5 segundos; el HUD muestra `TRIPLE SHOT` con el tiempo restante.
 
 ## Skins
 
@@ -67,5 +68,6 @@ Los iconos de vidas usan la silueta de la skin seleccionada.
 
 - 3 vidas con invencibilidad temporal al reaparecer (parpadeo)
 - Asteroides se parten en fragmentos más pequeños al ser destruidos
-- Power-ups de velocidad y escudo temporal
+- Power-ups de velocidad, escudo y triple shot temporal
+- Sistema de skins para la nave, con selección persistente
 - Partículas de explosión al destruir asteroides

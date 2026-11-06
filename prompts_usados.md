@@ -153,3 +153,30 @@ Vale implementalo, pero llamale worktree-customed para no confundirlo con lo de 
 ~~~text
 Actualiza el archivo de prompts_usados.md con este ultimo prompt que usé
 ~~~
+
+## 14. Crear los worktrees, en sesiones separadas y ejecutar lo que quiero en cada uno
+~~~text
+/worktree-customed triple shot
+En el worktree de triple-shot. Implementemos un **triple shot**: Por 5 segundos, el personaje dispara 3 veces en línea recta.
+~~~
+
+~~~text
+/worktree-customed Sistema de Skins
+En el worktree de sistema de skins, implementemos un **sistema de skins**: Poder cambiar la apariencia de la nave.
+~~~
+
+~~~text
+/worktree-customed escudo de la nave
+En el worktree del escudo de la nave,  implementemos un **escudo**: Un escudo que protege a la nave de los proyectiles enemigos.
+~~~
+
+## 15. Comprobar y mergear los worktrees
+~~~text
+Comprueba los tres worktrees que existen y mergealos, para que sigan teniendo las funcionalidades que se añadieron en cada worktree
+~~~
+
+## 16. Actualizar el registro con los últimos prompts
+
+~~~text
+Actualiza el archivo de @prompts_usados.md con los últimos prompt que usé
+~~~

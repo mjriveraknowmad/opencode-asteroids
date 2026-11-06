@@ -40,7 +40,8 @@ Luego visita `http://localhost:3000`.
 
 ## Power-ups
 
-- **Velocidad (`2X`)** — aparece al destruir asteroides (15% de probabilidad). Al recogerlo, la nave se mueve al doble de velocidad durante 5 segundos; el HUD muestra `VELOCIDAD x2` con el tiempo restante.
+- **Velocidad (`2X`)** — aparece al destruir asteroides (15% de probabilidad, repartida entre ambos power-ups). Al recogerlo, la nave se mueve al doble de velocidad durante 5 segundos; el HUD muestra `VELOCIDAD x2` con el tiempo restante.
+- **Triple shot (`3X`)** — aparece al destruir asteroides con la misma probabilidad que el de velocidad. Al recogerlo, la nave dispara tres balas paralelas en línea recta durante 5 segundos; el HUD muestra `TRIPLE SHOT` con el tiempo restante.
 
 ## Estrella fugaz
 

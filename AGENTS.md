@@ -25,6 +25,8 @@ There are no automated checks. Verify manually: play, shoot asteroids, lose all 
 - State machine: `state` is `'playing' | 'dead' | 'gameover'`, handled in `update()`.
 - Entities (`Ship`, `Asteroid`, `Bullet`, `Particle`, `PowerUp`) expose `update(dt)` / `draw()` and a `dead` flag; arrays are filtered each frame. Asteroid sizes are `1..3`, indexed into `RADII`/`SPEEDS`/`POINTS`.
 - `ship.speedBoost` is seconds remaining. The `2X` boost multiplies only ship displacement (`vx * dt`), not thrust, rotation, or bullets — do not also multiply thrust or the effect compounds.
+- `ship.tripleShot` is seconds remaining. While active, `tryShoot()` returns three parallel bullets along the ship's facing direction (no spread); it does not change cooldown or bullet damage. Preserve it across `nextLevel()` like `speedBoost`.
+- `PowerUp` has a `kind` (`'speed'` | `'triple'`) that picks its color and HUD-style label (`2X` / `3X`); the pickup applies the matching timer on `ship`.
 - `ShootingStar` extends `Asteroid`: faster, has a TTL, blinks before expiring, and overrides `split()` to return `[]`. Letting it expire is a valid way for a level to finish.
 - Input uses two sets: `keys` for held keys and `justPressed` for one-shot actions. `pressed(code)` **consumes** the flag, so call it once per frame per key.
 - World is toroidal via `wrap()`, but collision checks use plain Euclidean `dist()`. Objects across opposite edges do not collide; use a wrapped shortest-axis delta if changing collision logic.

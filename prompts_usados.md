@@ -180,3 +180,44 @@ Comprueba los tres worktrees que existen y mergealos, para que sigan teniendo la
 ~~~text
 Actualiza el archivo de @prompts_usados.md con los últimos prompt que usé
 ~~~
+
+
+## 17. Instalación para poder usar OpenCode en Github
+
+```
+opencode github install
+```
+Luego hay que configurar el repositorio para añadir un nuevo repository secret "OPENCODE_API_KEY", para eso vamos al repo > settings > en el menú lateral vamos a "Secrets and variables" y seleccionamos Actions > pulsamos el botón "New repository secret" y ahí añadimos "OPENCODE_API_KEY" con el valor (que será el valor de api key cread en opencode go)
+
+Después de esto se configura en las settings del repo (en github) para que se puedan añadir issues. Se crea una issue y luego nosotros añadimos un comentario como: 
+
+/oc implementa esta funcionalidad
+
+Y tras un minuto aparecen un icono de ojitos en el comentario, y luego empieza a implementarlo, que se puede ver como lo está haciendo desde pestaña Actions del repositorio de github.
+Al terminar hace una Pull Request con el código.
+
+El código del resultado de este prompt es el .github\workflows\opencode.yml
+
+fuente: https://www.udemy.com/course/opencode-guia-completa/learn/lecture/56769027#overview
+
+
+
+## 18. Crear un GitHub Action para Formatear Issues usando OpenCode en Github
+
+Prompt usado:
+~~~text
+Necesito que cada vez que se cree un issue. Ocupamos formatear, poner en las etiquetas "labels", y
+también mantener lo que sea que la persona escribió tal cual está, pero a la vez añadir cierta
+información que puede ser relevante a la hora de revisar los issues. El set de labels será: bug, enhancement, question, documentations y needs-triage.
+
+En pocas palabras lo que necesito que hagamos es un nuevo GitHub Action
+~~~
+
+Pedirá permisos, y le damos a Allow.
+
+(En el curso respondió que: Ante el bloqueo de la acción composite, usaremos opencode run headless.)
+(En curso dejó un archivo [opencode.json](https://gist.github.com/Klerith/184c31a7f9931ce7dab5a909ca5b4e20), por si opencode se quedaba estancado al ejecutar el action... que se tendría que colocar en la raíz del proyecto, es decir, donde está también el README.md
+El código del resultado de este prompt es el .github\workflows\issue-triage.yml
+
+
+fuente: https://wwww.udemy.com/course/opencode-guia-completa/learn/lecture/56771139#overview
